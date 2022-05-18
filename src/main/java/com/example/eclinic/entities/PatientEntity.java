@@ -1,6 +1,8 @@
 package com.example.eclinic.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,8 +22,8 @@ public class PatientEntity {
     @Column(name = "weight")
     private Integer weight;
     @Basic
-    @Column(name = "hieght")
-    private Integer hieght;
+    @Column(name = "height")
+    private Integer height;
     @Basic
     @Column(name = "diagnosis")
     private String diagnosis;
@@ -67,12 +69,12 @@ public class PatientEntity {
         this.weight = weight;
     }
 
-    public Integer getHieght() {
-        return hieght;
+    public Integer getHeight() {
+        return height;
     }
 
-    public void setHieght(Integer hieght) {
-        this.hieght = hieght;
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     public String getDiagnosis() {
@@ -112,11 +114,95 @@ public class PatientEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PatientEntity that = (PatientEntity) o;
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(gender, that.gender) && Objects.equals(weight, that.weight) && Objects.equals(hieght, that.hieght) && Objects.equals(diagnosis, that.diagnosis) && Objects.equals(phone, that.phone) && Objects.equals(insuranceCompanyId, that.insuranceCompanyId) && Objects.equals(doctorId, that.doctorId);
+        return id == that.id && Objects.equals(name, that.name) && Objects.equals(gender, that.gender) && Objects.equals(weight, that.weight) && Objects.equals(height, that.height) && Objects.equals(diagnosis, that.diagnosis) && Objects.equals(phone, that.phone) && Objects.equals(insuranceCompanyId, that.insuranceCompanyId) && Objects.equals(doctorId, that.doctorId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, gender, weight, hieght, diagnosis, phone, insuranceCompanyId, doctorId);
+        return Objects.hash(id, name, gender, weight, height, diagnosis, phone, insuranceCompanyId, doctorId);
     }
+
+    public static boolean addNewPatient(PatientEntity patient, boolean update) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            if (update) {
+                entityManager.merge(patient);
+            } else {
+                entityManager.persist(patient);
+            }
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return true;
+
+    }
+
+    public static List<PatientEntity> getAllPatients() {
+        List<PatientEntity> patientEntities = new ArrayList<>();
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            Query query = entityManager.createNativeQuery("SELECT * FROM patient;", PatientEntity.class);
+            patientEntities = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return patientEntities;
+    }
+
+    public InsuranceEntity getInsurance(){
+        return InsuranceEntity.getInsuranceEntityById(getInsuranceCompanyId());
+    }
+
+    public UserEntity getDoctor(){
+        return UserEntity.getUserById(getDoctorId()+"");
+    }
+
+    public static PatientEntity getPatientById(String id) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        PatientEntity patientEntity;
+        try {
+            Query query = entityManager.createNativeQuery("SELECT * FROM  patient WHERE id='" + id + "';", PatientEntity.class);
+            patientEntity = (PatientEntity) query.getResultList().get(0);
+        } catch (Exception exception) {
+            return null;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return patientEntity;
+    }
+
+    public static boolean removePatient(PatientEntity patient) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.remove(entityManager.contains(patient) ? patient : entityManager.merge(patient));
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return true;
+
+    }
+
+
 }

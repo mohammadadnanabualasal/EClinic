@@ -12,8 +12,34 @@
             <div class="row">
                 <div class="col-md-4">
                 </div>
-                <div class="col-md-4">
-                </div>
+                <c:if test="${user != null and user.permission eq 'admin'}">
+                    <div class="col-md-4">
+                        <p>
+                        <h3><a class="admin-link" href="/showUsers">Users</a></h3><br/>
+                        <h3><a class="admin-link" href="/addNewUser">Add New User</a></h3><br/>
+                        </p>
+                    </div>
+                </c:if>
+                <c:if test="${user != null and user.permission eq 'secretary'}">
+                    <div class="col-md-4">
+                        <p>
+                        <h3><a class="admin-link" href="/showPatients">Patients</a></h3><br/>
+                        <h3><a class="admin-link" href="/addNewPatient">Add New Patient</a></h3><br/>
+                        <h3><a class="admin-link" href="/showInsuranceCompanies">Insurance Companies</a></h3><br/>
+                        <h3><a class="admin-link" href="/addNewInsuranceCompany">Add New Insurance Companie</a></h3><br/>
+                        <h3><a class="admin-link" href="/showAppointment">Appointments</a></h3><br/>
+                        <h3><a class="admin-link" href="/addNewAppointment">Add New Appointment</a></h3><br/>
+                        </p>
+                    </div>
+                </c:if>
+                <c:if test="${user != null and user.permission eq 'doctor'}">
+                    <div class="col-md-4">
+                        <p>
+                        <h3><a class="admin-link" href="/showUsers">Users</a></h3><br/>
+                        <h3><a class="admin-link" href="/addNewUser">Add New User</a></h3><br/>
+                        </p>
+                    </div>
+                </c:if>
                 <div class="col-md-4">
                 </div>
             </div>

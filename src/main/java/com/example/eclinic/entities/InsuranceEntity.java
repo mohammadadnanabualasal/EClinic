@@ -1,6 +1,8 @@
 package com.example.eclinic.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -119,4 +121,79 @@ public class InsuranceEntity {
     public int hashCode() {
         return Objects.hash(id, name, address, phone, accreditationNumber, sessionPrice, fax, keyPersonPhone, keyPersonName);
     }
+
+    public static List<InsuranceEntity> getAllInsuranceEntities() {
+        List<InsuranceEntity> insuranceEntities = new ArrayList<>();
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            Query query = entityManager.createNativeQuery("SELECT * FROM insurance;", InsuranceEntity.class);
+            insuranceEntities = query.getResultList();
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return insuranceEntities;
+    }
+
+    public static InsuranceEntity getInsuranceEntityById(int id) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        InsuranceEntity insurance;
+        try {
+            Query query = entityManager.createNativeQuery("SELECT * FROM  insurance WHERE id='" + id + "';", InsuranceEntity.class);
+            insurance = (InsuranceEntity) query.getResultList().get(0);
+        } catch (Exception exception) {
+            return null;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return insurance;
+    }
+
+    public static boolean addNewInsuranceEntity(InsuranceEntity insurance, boolean update) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            if (update) {
+                entityManager.merge(insurance);
+            } else {
+                entityManager.persist(insurance);
+            }
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return true;
+
+    }
+
+    public static boolean removeInsuranceEntity(InsuranceEntity insurance) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.remove(entityManager.contains(insurance) ? insurance : entityManager.merge(insurance));
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return true;
+
+    }
+
 }

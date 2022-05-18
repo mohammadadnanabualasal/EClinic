@@ -25,16 +25,6 @@
                             </c:otherwise>
                         </c:choose>
                     </li>
-                    <li class="nav-item">
-                        <c:if test="${user == null}">
-                            <a class="nav-link" href="/register">Register</a>
-                        </c:if>
-                    </li>
-                    <li class="nav-item">
-                        <c:if test="${user != null && user.isAdmin.equals('YES')}">
-                            <a class="nav-link" href="/admin">Admin Page</a>
-                        </c:if>
-                    </li>
                 </ul>
             </div>
             <div class="col-md-4 center-alignment">

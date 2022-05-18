@@ -1,6 +1,8 @@
 package com.example.eclinic.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -130,9 +132,9 @@ public class UserEntity {
     }
 
     public static boolean addNewUser(UserEntity user, boolean update) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
             if (update) {
@@ -141,13 +143,69 @@ public class UserEntity {
                 entityManager.persist(user);
             }
             transaction.commit();
-            entityManager.close();
-            entityManagerFactory.close();
         } catch (Exception exception) {
             exception.printStackTrace();
             return false;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
         }
         return true;
 
     }
+
+    public static List<UserEntity> getAllUsers() {
+        List<UserEntity> userEntities = new ArrayList<>();
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            Query query = entityManager.createNativeQuery("SELECT * FROM user;", UserEntity.class);
+            userEntities = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return userEntities;
+    }
+
+    public static List<UserEntity> getAllDoctors() {
+        List<UserEntity> userEntities = new ArrayList<>();
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            Query query = entityManager.createNativeQuery("SELECT * FROM user where permission='doctor';", UserEntity.class);
+            userEntities = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return userEntities;
+    }
+
+
+
+    public static boolean removeUser(UserEntity user) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.remove(entityManager.contains(user) ? user : entityManager.merge(user));
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return true;
+
+    }
+
+
 }
