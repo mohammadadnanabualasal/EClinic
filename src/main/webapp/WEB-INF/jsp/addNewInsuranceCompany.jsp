@@ -41,6 +41,12 @@
                 <input type="text" class="form-control" id="fax" name="fax"/>
             </div>
             <div class="form-group">
+                <label for="phone">
+                    phone
+                </label>
+                <input type="text" class="form-control" id="phone" name="phone"/>
+            </div>
+            <div class="form-group">
                 <label for="keyPersonName">
                     Key Person Name
                 </label>
@@ -51,12 +57,6 @@
                     Key Person Phone Number
                 </label>
                 <input type="text" class="form-control" id="keyPersonPhone" name="keyPersonPhone"/>
-            </div>
-            <div class="form-group">
-                <label for="phone">
-                    phone
-                </label>
-                <input type="text" class="form-control" id="phone" name="phone"/>
             </div>
             <button type="submit" class="btn btn-primary">
                 Add Insurance Company

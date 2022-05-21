@@ -92,6 +92,8 @@ public class SecretaryController {
 
         if (havePermission(session)) {
             ModelAndView modelAndView = new ModelAndView("editPatient");
+            modelAndView.addObject("insurances", InsuranceEntity.getAllInsuranceEntities());
+            modelAndView.addObject("doctors", UserEntity.getAllDoctors());
             modelAndView.addObject("patient", PatientEntity.getPatientById(patientId));
             return modelAndView;
         }

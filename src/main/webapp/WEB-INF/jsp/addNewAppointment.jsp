@@ -41,7 +41,7 @@
                 <input name="time" type="time" class="form-control" id="time" required/>
             </div>
             <button type="submit" class="btn btn-primary">
-                Add Insurance Appointment
+                Add New Appointment
             </button>
         </form>
     </div>

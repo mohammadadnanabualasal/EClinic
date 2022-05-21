@@ -48,6 +48,7 @@
                 <label for="company">Insurance Company</label>
                 <select name="insuranceCompanyId" id="company" class="form-select form-select-lg mb-3"
                         aria-label="Company">
+                    <option value="${company.id}" selected>${company.name}</option>
                     <c:forEach var="company" items="${companies}">
                         <option value="${company.id}" selected>${company.name}</option>
                     </c:forEach>

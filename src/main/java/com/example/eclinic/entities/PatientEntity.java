@@ -161,6 +161,22 @@ public class PatientEntity {
         return patientEntities;
     }
 
+    public static List<PatientEntity> getAllPatientsForDoctor() {
+        List<PatientEntity> patientEntities = new ArrayList<>();
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            Query query = entityManager.createNativeQuery("SELECT * FROM patient;", PatientEntity.class);
+            patientEntities = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return patientEntities;
+    }
+
     public static List<PatientEntity> getAllPatients(String term) {
         List<PatientEntity> patientEntities = new ArrayList<>();
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");

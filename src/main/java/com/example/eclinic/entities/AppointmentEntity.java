@@ -145,6 +145,21 @@ public class AppointmentEntity {
         }
     }
 
+    public static List<AppointmentEntity> getAllAppointmentsForDoctor(int doctorId) {
+        try {
+            EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List<AppointmentEntity> appointments;
+            Query query = entityManager.createNativeQuery("SELECT * FROM  appointment WHERE doctorId='" + doctorId + "';", AppointmentEntity.class);
+            appointments = query.getResultList();
+            entityManager.close();
+            entityManagerFactory.close();
+            return appointments;
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
     public static void cancelAppointment(AppointmentEntity appointment)
     {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");

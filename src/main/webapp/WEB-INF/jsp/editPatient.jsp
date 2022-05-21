@@ -58,7 +58,7 @@
                 <label for="company">Insurance Company</label>
                 <select name="insuranceCompanyId" id="company" class="form-select form-select-lg mb-3"
                         aria-label="Company">
-                    <c:forEach var="company" items="${companies}">
+                    <c:forEach var="company" items="${insurances}">
                         <c:choose>
                             <c:when test="${company.id eq patient.insuranceCompanyId}">
                                 <option value="${company.id}" selected>${company.name}</option>

@@ -35,8 +35,8 @@
                 <c:if test="${user != null and user.permission eq 'doctor'}">
                     <div class="col-md-4">
                         <p>
-                        <h3><a class="admin-link" href="/showUsers">Users</a></h3><br/>
-                        <h3><a class="admin-link" href="/addNewUser">Add New User</a></h3><br/>
+                        <h3><a class="admin-link" href="/myAppointments">My Appointments</a></h3>
+                        <br/>
                         </p>
                     </div>
                 </c:if>
