@@ -6,26 +6,26 @@
 <div class="row main-container">
     <div class="col-md-4"></div>
     <div class="col-md-4">
-        <c:forEach items="${insuranceEntities}" var="insurance">
+        <c:forEach items="${insuranceEntities}" var="appointment">
             <div class="card">
                 <div   class="card-header" style="display: block;font-size: smaller;">
                     <div class="row">
-                        <div class="col-md-6 left-alignment"><h5>${insurance.name}</h5></div>
+                        <div class="col-md-6 left-alignment"><h5>${appointment.name}</h5></div>
                         <div class="col-md-6 right-alignment">
-                            <a href="/removeInsuranceCompany/${insurance.id}">Remove</a> / <a href="/editInsurance/${insurance.id}">Edit</a>
+                            <a href="/removeInsuranceCompany/${appointment.id}">Remove</a> / <a href="/editInsurance/${appointment.id}">Edit</a>
                         </div>
                     </div>
                 </div>
                 <div class="user-card-info">
                     <div class="alignment">
                         <p style="margin: 10px">
-                            <span style="display: block"><b>Phone:</b> ${insurance.phone}</span>
-                            <span style="display: block"><b>Address:</b> ${insurance.address}</span>
-                            <span style="display: block"><b>Accreditation Number:</b> ${insurance.accreditationNumber}</span>
-                            <span style="display: block"><b>Session Price:</b> ${insurance.sessionPrice} JOD</span>
-                            <span style="display: block"><b>Fax:</b> ${insurance.fax}</span>
-                            <span style="display: block"><b>Key Person Name:</b> ${insurance.keyPersonName}</span>
-                            <span style="display: block"><b>Key Person Phone:</b> ${insurance.keyPersonPhone}</span>
+                            <span style="display: block"><b>Phone:</b> ${appointment.phone}</span>
+                            <span style="display: block"><b>Address:</b> ${appointment.address}</span>
+                            <span style="display: block"><b>Accreditation Number:</b> ${appointment.accreditationNumber}</span>
+                            <span style="display: block"><b>Session Price:</b> ${appointment.sessionPrice} JOD</span>
+                            <span style="display: block"><b>Fax:</b> ${appointment.fax}</span>
+                            <span style="display: block"><b>Key Person Name:</b> ${appointment.keyPersonName}</span>
+                            <span style="display: block"><b>Key Person Phone:</b> ${appointment.keyPersonPhone}</span>
                         </p>
                     </div>
                 </div>

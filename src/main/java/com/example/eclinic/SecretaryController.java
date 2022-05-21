@@ -1,20 +1,17 @@
 package com.example.eclinic;
 
+import com.example.eclinic.entities.AppointmentEntity;
 import com.example.eclinic.entities.InsuranceEntity;
 import com.example.eclinic.entities.PatientEntity;
 import com.example.eclinic.entities.UserEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.servlet.http.HttpSession;
+import java.sql.Date;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Controller
@@ -239,23 +236,29 @@ public class SecretaryController {
         return new ModelAndView("redirect:/login");
     }
 
-
-
-
-
-
-
-
-
-
-    @RequestMapping(value = "/showAppointment", method = RequestMethod.GET)
-    public ModelAndView showAppointment(HttpSession session) {
+    @RequestMapping(value = "/showAppointments", method = RequestMethod.GET)
+    public ModelAndView showAppointments(HttpSession session) {
 
         if (havePermission(session)) {
-            List<UserEntity> users = UserEntity.getAllUsers();
-            ModelAndView modelAndView = new ModelAndView("showUsers");
+            List<AppointmentEntity> appointmentEntities = AppointmentEntity.getAllAppointments();
+            ModelAndView modelAndView = new ModelAndView("showAppointments");
 
-            modelAndView.addObject("users", users);
+            modelAndView.addObject("appointments", appointmentEntities);
+            return modelAndView;
+        } else {
+            return new ModelAndView("redirect:/home");
+        }
+    }
+
+    @RequestMapping(value = "/addNewAppointment", method = RequestMethod.GET)
+    public ModelAndView addNewAppointmentPage(HttpSession session) {
+
+        if (havePermission(session)) {
+            List<PatientEntity> patientEntities = PatientEntity.getAllPatients();
+            List<UserEntity> doctors = UserEntity.getAllDoctors();
+            ModelAndView modelAndView = new ModelAndView("addNewAppointment");
+            modelAndView.addObject("patients", patientEntities);
+            modelAndView.addObject("doctors", doctors);
             return modelAndView;
         } else {
             return new ModelAndView("redirect:/home");
@@ -264,47 +267,87 @@ public class SecretaryController {
 
     @RequestMapping(value = "/addNewAppointment", method = RequestMethod.POST)
     public ModelAndView addNewAppointment(HttpSession session
-            , @RequestParam(name = "name") String name
-            , @RequestParam(name = "email") String email
-            , @RequestParam(name = "password") String password
-            , @RequestParam(name = "confirmPassword") String confirmPassword
-            , @RequestParam(name = "phone") String phone
-            , @RequestParam(name = "permission", defaultValue = "") String permission) {
+            , @RequestParam(name = "patient") int patientId
+            , @RequestParam(name = "doctor", defaultValue = "0") int doctorId
+            , @RequestParam(name = "date") String date
+            , @RequestParam(name = "time") String time
+            ) {
         if (havePermission(session)) {
-            if (!confirmPassword.equals(password)) {
-                return new ModelAndView("redirect:/addNewUser");
-            }
-            EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            Query query = entityManager.createNativeQuery("SELECT * FROM user WHERE email = '" + email + "';");
-            int users = query.getResultList().size();
-            entityManager.close();
-            entityManagerFactory.close();
-            UserEntity userEntity = new UserEntity();
-            userEntity.setName(name);
-            userEntity.setPassword(password);
-            userEntity.setEmail(email);
-            userEntity.setPhone(phone);
-            userEntity.setPermission(permission);
-            boolean success;
+            AppointmentEntity appointmentEntity = new AppointmentEntity();
+            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
+            long ms;
             try {
-                if (users == 0) {
-                    success = userEntity.addNewUser(userEntity, false);
-                    if (success) {
-                        return new ModelAndView("redirect:/addNewUser");
-                    }
-                }
-            } catch (Exception e) {
+                ms = timeFormat.parse(time).getTime();
+                appointmentEntity.setTime(new Time(ms));
+                appointmentEntity.setDate(Date.valueOf(date));
+            } catch (ParseException e) {
                 e.printStackTrace();
+                throw new RuntimeException(e);
             }
-            return new ModelAndView("redirect:/addNewUser");
+            appointmentEntity.setDoctorId(doctorId);
+            appointmentEntity.setPatientId(patientId);
+            AppointmentEntity.addNewAppointment(appointmentEntity, false);
+            return new ModelAndView("redirect:/showAppointments");
+
         } else {
-            return new ModelAndView("redirect:/home");
+            return new ModelAndView("redirect:/login");
         }
     }
 
     private boolean havePermission(HttpSession session) {
         UserEntity userEntity = (UserEntity) session.getAttribute("user");
         return (userEntity != null && (userEntity.getPermission().equals("doctor") || userEntity.getPermission().equals("secretary")));
+    }
+
+    @RequestMapping(value = "/editAppointment/{id}", method = RequestMethod.GET)
+    public ModelAndView editAppointment(HttpSession session, @PathVariable("id") int appointmentId)
+    {
+        if (havePermission(session)) {
+            ModelAndView modelAndView = new ModelAndView("editAppointment");
+            modelAndView.addObject("appointment", AppointmentEntity.getAppointmentById(appointmentId));
+            modelAndView.addObject("doctors", UserEntity.getAllDoctors());
+            modelAndView.addObject("patients", PatientEntity.getAllPatients());
+            return modelAndView;
+        }
+        return new ModelAndView("redirect:/home");
+    }
+
+    @RequestMapping(value = "/updateAppointment/{id}",  method = RequestMethod.POST)
+    public ModelAndView updateAppointment(HttpSession session
+            , @PathVariable("id") int appointmentId
+            , @RequestParam(name = "patient") int patientId
+            , @RequestParam(name = "doctor") int doctorId
+            , @RequestParam(name = "date") String date
+            , @RequestParam(name = "time") String time
+    )
+    {
+        if (havePermission(session)) {
+            AppointmentEntity appointmentEntity = AppointmentEntity.getAppointmentById(appointmentId);
+            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
+            long ms;
+            try {
+                ms = timeFormat.parse(time).getTime();
+                appointmentEntity.setTime(new Time(ms));
+                appointmentEntity.setDate(Date.valueOf(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+            appointmentEntity.setDoctorId(doctorId);
+            appointmentEntity.setPatientId(patientId);
+            AppointmentEntity.addNewAppointment(appointmentEntity, true);
+            return new ModelAndView("redirect:/showAppointments");
+        }
+        return new ModelAndView("redirect:/login");
+    }
+
+    @RequestMapping(value = "/cancelAppointment/{id}")
+    public ModelAndView cancelAppointment(HttpSession session, @PathVariable(value = "id") int id)
+    {
+        if (havePermission(session)) {
+            AppointmentEntity.cancelAppointment(AppointmentEntity.getAppointmentById(id));
+            return new ModelAndView("redirect:/showAppointments");
+        }
+        return new ModelAndView("redirect:/login");
     }
 }

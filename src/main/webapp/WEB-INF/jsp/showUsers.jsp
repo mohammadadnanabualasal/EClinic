@@ -6,23 +6,23 @@
 <div class="row main-container">
     <div class="col-md-4"></div>
     <div class="col-md-4">
-        <c:forEach items="${users}" var="insurance">
+        <c:forEach items="${users}" var="appointment">
             <div class="card">
                 <div   class="card-header" style="display: block;font-size: smaller;">
                     <div class="row">
-                        <div class="col-md-6 left-alignment"><h5>${insurance.name}</h5></div>
+                        <div class="col-md-6 left-alignment"><h5>${appointment.name}</h5></div>
                         <div class="col-md-6 right-alignment">
-                            <a href="/removeUser/${insurance.id}">Remove</a> / <a href="/editUser/${insurance.id}">Edit</a>
+                            <a href="/removeUser/${appointment.id}">Remove</a> / <a href="/editUser/${appointment.id}">Edit</a>
                         </div>
                     </div>
                 </div>
                 <div class="user-card-info">
                     <div class="alignment">
                         <p style="margin: 10px">
-                            <span style="display: block">${insurance.email}</span>
-                            <span style="display: block">${insurance.address}</span>
-                            <span style="display: block">${insurance.phone}</span>
-                            <span style="display: block">${insurance.permission}</span>
+                            <span style="display: block">${appointment.email}</span>
+                            <span style="display: block">${appointment.address}</span>
+                            <span style="display: block">${appointment.phone}</span>
+                            <span style="display: block">${appointment.permission}</span>
                         </p>
                     </div>
                 </div>

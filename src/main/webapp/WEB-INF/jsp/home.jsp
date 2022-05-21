@@ -27,7 +27,7 @@
                         <h3><a class="admin-link" href="/addNewPatient">Add New Patient</a></h3><br/>
                         <h3><a class="admin-link" href="/showInsuranceCompanies">Insurance Companies</a></h3><br/>
                         <h3><a class="admin-link" href="/addNewInsuranceCompany">Add New Insurance Companie</a></h3><br/>
-                        <h3><a class="admin-link" href="/showAppointment">Appointments</a></h3><br/>
+                        <h3><a class="admin-link" href="/showAppointments">Appointments</a></h3><br/>
                         <h3><a class="admin-link" href="/addNewAppointment">Add New Appointment</a></h3><br/>
                         </p>
                     </div>

@@ -3,6 +3,8 @@ package com.example.eclinic.entities;
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -77,4 +79,87 @@ public class AppointmentEntity {
     public int hashCode() {
         return Objects.hash(id, patientId, date, time, doctorId);
     }
+
+    public static boolean addNewAppointment(AppointmentEntity appointment, boolean update) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            if (update) {
+                entityManager.merge(appointment);
+            } else {
+                entityManager.persist(appointment);
+            }
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return true;
+    }
+
+    public static List<AppointmentEntity> getAllAppointments() {
+        List<AppointmentEntity> appointmentEntities = new ArrayList<>();
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            Query query = entityManager.createNativeQuery("select * from appointment order by date;", AppointmentEntity.class);
+            appointmentEntities = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return appointmentEntities;
+    }
+
+    public PatientEntity getPatient()
+    {
+        PatientEntity patient = PatientEntity.getPatientById(getPatientId()+"");
+        return patient;
+    }
+
+    public UserEntity getDoctor()
+    {
+        UserEntity doctor = UserEntity.getUserById(getDoctorId()+"");
+        return doctor;
+    }
+
+    public static AppointmentEntity getAppointmentById(int id) {
+        try {
+            EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            AppointmentEntity appointment;
+            Query query = entityManager.createNativeQuery("SELECT * FROM  appointment WHERE id='" + id + "';", AppointmentEntity.class);
+            appointment = (AppointmentEntity) query.getResultList().get(0);
+            entityManager.close();
+            entityManagerFactory.close();
+            return appointment;
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    public static void cancelAppointment(AppointmentEntity appointment)
+    {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.remove(entityManager.contains(appointment) ? appointment : entityManager.merge(appointment));
+            transaction.commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+    }
+
 }
