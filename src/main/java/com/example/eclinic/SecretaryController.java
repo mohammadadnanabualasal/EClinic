@@ -12,6 +12,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -351,5 +352,22 @@ public class SecretaryController {
             return new ModelAndView("redirect:/showAppointments");
         }
         return new ModelAndView("redirect:/login");
+    }
+
+    @RequestMapping(value = "/userSearch")
+    public @ResponseBody List<String> userSearch(HttpSession session, @RequestParam(value = "term") String term) {
+        List<String> list = new ArrayList<>();
+        if (havePermission(session) && !term.isEmpty()) {
+            String patientsHtml = "";
+            List<PatientEntity> patientEntities = UserEntity.getAllPatientsByPhoneTerm(term);
+            for (PatientEntity patient : patientEntities
+            ) {
+                patientsHtml = patientsHtml + "<option value=\""+patient.getId()+"\">" + patient.getPhone() + " (" + patient.getName() + ")" + "</option>";
+
+            }
+            patientsHtml = patientsHtml + "<option class=\"user-item\">Add new Patient -></option>";
+            list.add("<select name=\"patient\" id=\"patient\" class=\"form-select form-select-lg mb-3\" required>" + patientsHtml + "</select>");
+        }
+        return list;
     }
 }

@@ -11,14 +11,18 @@
     <div class="col-md-4">
         <form role="form" class="login-form" action="/addNewAppointment" method="post">
             <div class="form-group">
-                <label for="patient">
+                <label for="phone">
+                    Search by phone number
+                </label>
+                <input name="phone" type="text" class="form-control" id="phone" oninput="userAjaxSearch()"/>
+            </div>
+            <div class="form-group">
+                <label>
                     Patient
                 </label>
-                <select name="patient" id="patient" class="form-select form-select-lg mb-3" required>
-                    <c:forEach items="${patients}" var="patient">
-                        <option value="${patient.id}">${patient.name}</option>
-                    </c:forEach>
-                </select>
+                <div id="usersSection">
+
+                </div>
             </div>
             <div class="form-group">
                 <label for="doctor">
@@ -53,3 +57,25 @@
 <script>$(document).ready(function () {
     $("select").select();
 });</script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+    function userAjaxSearch(){
+        document.getElementById("usersSection").innerHTML = '';
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/userSearch",
+            data: {'term': document.getElementById("phone").value},
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (res) {
+                document.getElementById("usersSection").innerHTML = res;
+            },
+            error: function (e) {
+                document.getElementById("usersSection").innerHTML = res;
+            }
+        });
+    }
+</script>
