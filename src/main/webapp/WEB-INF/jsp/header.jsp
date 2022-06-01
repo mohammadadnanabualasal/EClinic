@@ -38,6 +38,14 @@
                 </ul>
             </div>
             <div class="col-md-4 right-alignment">
+                <c:if test="${user != null and user.permission eq 'secretary'}">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/calendar"><i class="fas fa-calendar-alt fa-2x" style="color: #319a9e;"></i></a>
+                        </li>
+                    </ul>
+                </c:if>
+
             </div>
         </div>
     </div>

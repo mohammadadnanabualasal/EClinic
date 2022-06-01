@@ -10,37 +10,75 @@
     <div class="row">
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-2">
                 </div>
                 <c:if test="${user != null and user.permission eq 'admin'}">
-                    <div class="col-md-4">
-                        <p>
-                        <h3><a class="admin-link" href="/showUsers">Users</a></h3><br/>
-                        <h3><a class="admin-link" href="/addNewUser">Add New User</a></h3><br/>
-                        </p>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <img src="/image/users" class="card-img-top" alt="users">
+                                    <div class="card-body">
+                                        <a href="/showUsers" class="">Users</a><br/>
+                                        <a href="/addNewUser" class="">Add New User</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
                     </div>
                 </c:if>
                 <c:if test="${user != null and user.permission eq 'secretary'}">
-                    <div class="col-md-4">
-                        <p>
-                        <h3><a class="admin-link" href="/showPatients">Patients</a></h3><br/>
-                        <h3><a class="admin-link" href="/addNewPatient">Add New Patient</a></h3><br/>
-                        <h3><a class="admin-link" href="/showInsuranceCompanies">Insurance Companies</a></h3><br/>
-                        <h3><a class="admin-link" href="/addNewInsuranceCompany">Add New Insurance Companie</a></h3><br/>
-                        <h3><a class="admin-link" href="/showAppointments">Appointments</a></h3><br/>
-                        <h3><a class="admin-link" href="/addNewAppointment">Add New Appointment</a></h3><br/>
-                        </p>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <img src="/image/appointment" class="card-img-top" alt="appointments">
+                                    <div class="card-body">
+                                        <a href="/showAppointments" class="">Appointments</a><br/>
+                                        <a href="/addNewAppointment" class="">Add New Appointment</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <img src="/image/patient" class="card-img-top" alt="patient">
+                                    <div class="card-body">
+                                        <a href="/showPatients" class="">Patients</a><br/>
+                                        <a href="/addNewPatient" class="">Add New Patient</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <img src="/image/insurance" class="card-img-top" alt="insurance">
+                                    <div class="card-body">
+                                        <a href="/showInsuranceCompanies" class="">Insurance Companies</a><br/>
+                                        <a href="/addNewInsuranceCompany" class="">Add New Insurance Company</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </c:if>
                 <c:if test="${user != null and user.permission eq 'doctor'}">
-                    <div class="col-md-4">
-                        <p>
-                        <h3><a class="admin-link" href="/myAppointments">My Appointments</a></h3>
-                        <br/>
-                        </p>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <img src="/image/appointment" class="card-img-top" alt="appointments">
+                                    <div class="card-body">
+                                        <a href="/myAppointments" class="">My Appointments</a><br/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
                     </div>
                 </c:if>
-                <div class="col-md-4">
+                <div class="col-md-2">
                 </div>
             </div>
         </div>

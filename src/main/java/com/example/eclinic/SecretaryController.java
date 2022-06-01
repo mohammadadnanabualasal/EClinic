@@ -354,20 +354,91 @@ public class SecretaryController {
         return new ModelAndView("redirect:/login");
     }
 
-    @RequestMapping(value = "/userSearch")
-    public @ResponseBody List<String> userSearch(HttpSession session, @RequestParam(value = "term") String term) {
+    @RequestMapping(value = "/patientSearch")
+    public @ResponseBody List<String> patientSearch(HttpSession session, @RequestParam(value = "term") String term) {
         List<String> list = new ArrayList<>();
         if (havePermission(session) && !term.isEmpty()) {
             String patientsHtml = "";
-            List<PatientEntity> patientEntities = UserEntity.getAllPatientsByPhoneTerm(term);
+            List<PatientEntity> patientEntities = PatientEntity.getAllPatientsByPhoneTerm(term);
+            if (patientEntities.isEmpty()) {
+                return list;
+            }
             for (PatientEntity patient : patientEntities
             ) {
                 patientsHtml = patientsHtml + "<option value=\""+patient.getId()+"\">" + patient.getPhone() + " (" + patient.getName() + ")" + "</option>";
 
             }
-            patientsHtml = patientsHtml + "<option class=\"user-item\">Add new Patient -></option>";
             list.add("<select name=\"patient\" id=\"patient\" class=\"form-select form-select-lg mb-3\" required>" + patientsHtml + "</select>");
         }
         return list;
+    }
+    @RequestMapping(value = "/calendar")
+    public ModelAndView calendar(HttpSession session)
+    {
+        if (havePermission(session)){
+            Date today = new Date(System.currentTimeMillis());
+            ModelAndView modelAndView = new ModelAndView("calendar");
+            modelAndView.addObject("today", today);
+            String appointments = "";
+            List<AppointmentEntity> appointmentEntities = AppointmentEntity.getAppointmentsByDateAndDoctorId(today, -1);
+            if (!appointmentEntities.isEmpty()){
+                for (AppointmentEntity appointment: appointmentEntities
+                ) {
+                    appointments = appointments + getAppointmentCard(appointment) + "<br/>";
+                }
+            }else {
+                appointments = appointments + "no appointments today.";
+            }
+            modelAndView.addObject("appointments", appointments);
+            modelAndView.addObject("doctors", UserEntity.getAllDoctors());
+            return modelAndView;
+        }
+        return new ModelAndView("redirect:/login");
+    }
+
+    @RequestMapping(value = "/getAppointmentsForDate")
+    public @ResponseBody String getAppointmentsForDate(HttpSession session, @RequestParam(value = "date") Date date, @RequestParam(value = "doctor") int doctorId)
+    {
+        String response = "";
+        if (havePermission(session)){
+            List<AppointmentEntity> appointmentEntities = AppointmentEntity.getAppointmentsByDateAndDoctorId(date, doctorId);
+            if (appointmentEntities!= null && !appointmentEntities.isEmpty()){
+                for (AppointmentEntity appointment: appointmentEntities
+                     ) {
+                    response = response + getAppointmentCard(appointment) + "<br/>";
+                }
+            }else {
+                response = response + "no appointments.";
+            }
+        }
+        return response;
+    }
+
+    public String getAppointmentCard(AppointmentEntity appointment)
+    {
+        return "<div class=\"card\">\n" +
+                "                <div   class=\"card-header\" style=\"display: block;font-size: smaller;\">\n" +
+                "                    <div class=\"row\">\n" +
+                "                        <div class=\"col-md-6 left-alignment\"></div>\n" +
+                "                        <div class=\"col-md-6 right-alignment\">\n" +
+                "                            <a href=\"/cancelAppointment/"+appointment.getId()+"\">cancel</a> / <a href=\"/editAppointment/"+appointment.getId()+"\">Edit</a>\n" +
+                "                        </div>\n" +
+                "                    </div>\n" +
+                "                </div>\n" +
+                "                <div class=\"user-card-info\">\n" +
+                "                    <div class=\"alignment\">\n" +
+                "                        <p style=\"margin: 10px\">\n" +
+                "                            <span style=\"display: block\"><b>Patient:</b> "+appointment.getPatient().getName()+"</span>\n" +
+                "                            <span style=\"display: block\"><b>Diagnosis:</b> "+appointment.getPatient().getDiagnosis()+"</span>\n" +
+                "                            <span style=\"display: block\"><b>Gender:</b> "+appointment.getPatient().getGender()+"</span>\n" +
+                "                            <span style=\"display: block\"><b>Patient Phone:</b> "+appointment.getPatient().getPhone()+"</span>\n" +
+                "                            <span style=\"display: block\"><b>Doctor:</b> "+appointment.getDoctor().getName()+"</span>\n" +
+                "                            <span style=\"display: block\"><b>Doctor Phone:</b> "+appointment.getDoctor().getPhone()+"</span>\n" +
+                "                            <span style=\"display: block\"><b>Date:</b> "+appointment.getDate().toString()+"</span>\n" +
+                "                            <span style=\"display: block\"><b>Time:</b> "+appointment.getTime().toString()+"</span>\n" +
+                "                        </p>\n" +
+                "                    </div>\n" +
+                "                </div>\n" +
+                "            </div>";
     }
 }

@@ -173,3 +173,7 @@ a.admin{
 .warning{
     color: red;
 }
+.card-img-top{
+    height: 200px;
+    object-fit: cover;
+}

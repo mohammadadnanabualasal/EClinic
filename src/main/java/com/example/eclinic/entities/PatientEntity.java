@@ -236,5 +236,19 @@ public class PatientEntity {
 
     }
 
-
+    public static List<PatientEntity> getAllPatientsByPhoneTerm(String phone) {
+        List<PatientEntity> patientEntities = new ArrayList<>();
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            Query query = entityManager.createNativeQuery("select * from patient where phone like '%"+phone+"%' order by instr(phone, '"+phone+"');", PatientEntity.class);
+            patientEntities = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return patientEntities;
+    }
 }

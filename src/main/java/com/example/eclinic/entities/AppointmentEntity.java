@@ -177,4 +177,24 @@ public class AppointmentEntity {
         }
     }
 
+    public static List<AppointmentEntity> getAppointmentsByDateAndDoctorId(Date date, int doctorId){
+        try {
+            EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List<AppointmentEntity> appointments;
+            Query query;
+            if (doctorId == -1) {
+                query = entityManager.createNativeQuery("SELECT * FROM  appointment WHERE date='" + date + "' order by time;", AppointmentEntity.class);
+            }else {
+                query = entityManager.createNativeQuery("SELECT * FROM  appointment WHERE doctorId='" + doctorId + "' and date='" + date + "' order by time;", AppointmentEntity.class);
+            }
+            appointments = query.getResultList();
+            entityManager.close();
+            entityManagerFactory.close();
+            return appointments;
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
 }

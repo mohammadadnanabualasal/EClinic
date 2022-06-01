@@ -14,15 +14,16 @@
                 <label for="phone">
                     Search by phone number
                 </label>
-                <input name="phone" type="text" class="form-control" id="phone" oninput="userAjaxSearch()"/>
+                <input name="phone" type="text" class="form-control" id="phone" oninput="patientAjaxSearch()"/>
             </div>
             <div class="form-group">
                 <label>
                     Patient
                 </label>
-                <div id="usersSection">
+                <div id="patientsSection">
 
                 </div>
+                <a href="/addNewPatient">Add new Patient</a>
             </div>
             <div class="form-group">
                 <label for="doctor">
@@ -60,21 +61,21 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>
-    function userAjaxSearch(){
-        document.getElementById("usersSection").innerHTML = '';
+    function patientAjaxSearch(){
+        document.getElementById("patientsSection").innerHTML = '';
         $.ajax({
             type: "GET",
             contentType: "application/json",
-            url: "/userSearch",
+            url: "/patientSearch",
             data: {'term': document.getElementById("phone").value},
             dataType: 'json',
             cache: false,
             timeout: 600000,
             success: function (res) {
-                document.getElementById("usersSection").innerHTML = res;
+                document.getElementById("patientsSection").innerHTML = res;
             },
             error: function (e) {
-                document.getElementById("usersSection").innerHTML = res;
+                document.getElementById("patientsSection").innerHTML = res;
             }
         });
     }

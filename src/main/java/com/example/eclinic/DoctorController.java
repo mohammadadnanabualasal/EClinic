@@ -5,9 +5,12 @@ import com.example.eclinic.entities.UserEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.sql.Date;
 import java.util.List;
 
 @Controller
@@ -25,6 +28,7 @@ public class DoctorController {
             List<AppointmentEntity> appointmentEntities = AppointmentEntity.getAllAppointmentsForDoctor(((UserEntity)session.getAttribute("user")).getId());
             ModelAndView modelAndView = new ModelAndView("myAppointments");
             modelAndView.addObject("appointments", appointmentEntities);
+            modelAndView.addObject("doctor", session.getAttribute("user"));
             return modelAndView;
         } else {
             return new ModelAndView("redirect:/home");

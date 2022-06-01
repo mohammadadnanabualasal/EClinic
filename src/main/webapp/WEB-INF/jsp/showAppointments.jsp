@@ -26,7 +26,7 @@
                             <span style="display: block"><b>Patient Phone:</b> ${appointment.getPatient().phone}</span>
                             <span style="display: block"><b>Doctor:</b> ${appointment.getDoctor().name}</span>
                             <span style="display: block"><b>Doctor Phone:</b> ${appointment.getDoctor().phone}</span>
-                            <span style="display: block"><b>Date:</b> ><fmt:formatDate pattern = "yyyy/MMM/dd" value = "${appointment.date}"/></span>
+                            <span style="display: block"><b>Date:</b> <fmt:formatDate pattern = "yyyy/MMM/dd" value = "${appointment.date}"/></span>
                             <span style="display: block"><b>Time:</b> <fmt:formatDate pattern = "hh:mm a" value = "${appointment.time}"/></span>
                         </p>
                     </div>

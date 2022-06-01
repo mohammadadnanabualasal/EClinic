@@ -2,6 +2,7 @@ package com.example.eclinic;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,12 +17,15 @@ import java.io.IOException;
 public class ImageController {
 
     @ResponseBody
-    @RequestMapping(value = "/image/logo", produces = MediaType.IMAGE_JPEG_VALUE)
-    public byte[] getProfileImage(HttpServletResponse response)
+    @RequestMapping(value = "/image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getProfileImage(HttpServletResponse response, @PathVariable(value = "name") String name)
     {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-        String path = System.getProperty("user.home")+"/EClinic/images/logo.png";
-        String format ="png";
+        String format ="jpg";
+        if (name.equals("logo")){
+            format = "png";
+        }
+        String path = System.getProperty("user.home")+"/EClinic/images/"+name+"."+format;
         byte[] bytes = null;
         try {
             bytes = getImageBytes(path,format);
