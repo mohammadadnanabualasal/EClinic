@@ -150,7 +150,7 @@ public class AppointmentEntity {
             EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             List<AppointmentEntity> appointments;
-            Query query = entityManager.createNativeQuery("SELECT * FROM  appointment WHERE doctorId='" + doctorId + "';", AppointmentEntity.class);
+            Query query = entityManager.createNativeQuery("SELECT * FROM  appointment WHERE doctorId='" + doctorId + "' order by date,time;", AppointmentEntity.class);
             appointments = query.getResultList();
             entityManager.close();
             entityManagerFactory.close();
