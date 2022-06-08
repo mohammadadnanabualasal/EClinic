@@ -1,6 +1,10 @@
 package com.example.eclinic.entities;
 
 import javax.persistence.*;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -207,5 +211,74 @@ public class UserEntity {
 
     }
 
+    public boolean haveReservationAt(int time, String date){
+        String stringTime = "";
+        if ((time/2) < 10){
+            stringTime = "0"+stringTime+(time/2);
+        }else {
+            stringTime = stringTime+(time/2);
+        }
+        if (!(time%2 == 0)){
+            stringTime = stringTime + ":30";
+        }else {
+            stringTime = stringTime + ":00";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            Time from = new Time(sdf.parse(stringTime).getTime());
+            LocalTime start = from.toLocalTime();
+            LocalTime end = start.plusMinutes(30);
+            Query query = entityManager.createNativeQuery("SELECT * FROM appointment where doctorId='"+getId()+"' and time >= '"
+                    +start.toString()+"' and time < '"+(end.toString().equals("00:00")?"24:00":end.toString())+"' and date ='"+date+"';", AppointmentEntity.class);
+            int count = query.getResultList().size();
+            if (count > 0){
+                return true;
+            }else {
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+    }
 
+    public AppointmentEntity getReservationAt(int time, String date){
+        String stringTime = "";
+        if ((time/2) < 10){
+            stringTime = "0"+stringTime+(time/2);
+        }else {
+            stringTime = stringTime+(time/2);
+        }
+        if (!(time%2 == 0)){
+            stringTime = stringTime + ":30";
+        }else {
+            stringTime = stringTime + ":00";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            Time from = new Time(sdf.parse(stringTime).getTime());
+            LocalTime start = from.toLocalTime();
+            LocalTime end = start.plusMinutes(30);
+            Query query = entityManager.createNativeQuery("SELECT * FROM appointment where doctorId='"+getId()+"' and time >= '"
+                    +start.toString()+"' and time < '"+(end.toString().equals("00:00")?"24:00":end.toString())+"' and date ='"+date+"';", AppointmentEntity.class);
+            AppointmentEntity appointment = null;
+            if ( query.getResultList().size()>0){
+            appointment = (AppointmentEntity) query.getResultList().get(0);
+            }
+            return appointment;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+    }
 }

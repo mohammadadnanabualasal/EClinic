@@ -68,7 +68,7 @@ public class SecretaryController {
             try {
                 success = PatientEntity.addNewPatient(patientEntity, false);
                 if (success) {
-                    return new ModelAndView("redirect:/addNewPatient");
+                    return new ModelAndView("redirect:/addNewAppointment");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -373,14 +373,17 @@ public class SecretaryController {
         return list;
     }
     @RequestMapping(value = "/calendar")
-    public ModelAndView calendar(HttpSession session)
+    public ModelAndView calendar(HttpSession session, @RequestParam(value = "date", defaultValue = "") String date)
     {
         if (havePermission(session)){
-            Date today = new Date(System.currentTimeMillis());
+            Date theDate = new Date(System.currentTimeMillis());
             ModelAndView modelAndView = new ModelAndView("calendar");
-            modelAndView.addObject("today", today);
+            if (!date.equals("")){
+                theDate = Date.valueOf(date);
+            }
+            modelAndView.addObject("date", theDate);
             String appointments = "";
-            List<AppointmentEntity> appointmentEntities = AppointmentEntity.getAppointmentsByDateAndDoctorId(today, -1);
+            List<AppointmentEntity> appointmentEntities = AppointmentEntity.getAppointmentsByDateAndDoctorId(theDate, -1);
             if (!appointmentEntities.isEmpty()){
                 for (AppointmentEntity appointment: appointmentEntities
                 ) {
