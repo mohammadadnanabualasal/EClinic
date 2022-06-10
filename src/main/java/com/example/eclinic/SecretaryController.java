@@ -254,7 +254,7 @@ public class SecretaryController {
     }
 
     @RequestMapping(value = "/addNewAppointment", method = RequestMethod.GET)
-    public ModelAndView addNewAppointmentPage(HttpSession session) {
+    public ModelAndView addNewAppointmentPage(HttpSession session, @RequestParam(value = "error", defaultValue = "") String error) {
 
         if (havePermission(session)) {
             List<PatientEntity> patientEntities = PatientEntity.getAllPatients();
@@ -262,6 +262,7 @@ public class SecretaryController {
             ModelAndView modelAndView = new ModelAndView("addNewAppointment");
             modelAndView.addObject("patients", patientEntities);
             modelAndView.addObject("doctors", doctors);
+            modelAndView.addObject("error", error);
             return modelAndView;
         } else {
             return new ModelAndView("redirect:/home");
@@ -289,7 +290,11 @@ public class SecretaryController {
             }
             appointmentEntity.setDoctorId(doctorId);
             appointmentEntity.setPatientId(patientId);
-            AppointmentEntity.addNewAppointment(appointmentEntity, false);
+            if(AppointmentEntity.isDoctorAvailableAt(doctorId, new Time(ms), Date.valueOf(date))) {
+                AppointmentEntity.addNewAppointment(appointmentEntity, false);
+            }else {
+                return new ModelAndView("redirect:/addNewAppointment?error=Doctor "+UserEntity.getUserById(doctorId+"").getName()+" is not available at this time.");
+            }
             return new ModelAndView("redirect:/showAppointments");
 
         } else {

@@ -9,6 +9,7 @@
 <div class="row main-container">
     <div class="col-md-4"></div>
     <div class="col-md-4">
+        <p class="warning">${error}</p>
         <form role="form" class="login-form" action="/addNewAppointment" method="post">
             <div class="form-group">
                 <label for="phone">

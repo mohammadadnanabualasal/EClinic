@@ -3,6 +3,7 @@ package com.example.eclinic.entities;
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -195,6 +196,34 @@ public class AppointmentEntity {
         } catch (Exception exception) {
             return null;
         }
+    }
+
+    public static boolean isDoctorAvailableAt(int doctorId, Time time, Date date)
+    {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
+        try {
+            time = new Time(simpleDateFormat.parse(time.toString()).getTime());
+            List<AppointmentEntity> appointments;
+            Query query = entityManager.createNativeQuery("SELECT * FROM  appointment WHERE doctorId='"
+                    + doctorId + "' and date ='"+date+"' and time > '"+time.toLocalTime().minusMinutes(30).toString()+"' and time < '"+
+                    time.toLocalTime().plusMinutes(30).toString()+"';", AppointmentEntity.class);
+            appointments = query.getResultList();
+            if (appointments.size()>0)
+            {
+                return false;
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return true;
+
     }
 
 }
