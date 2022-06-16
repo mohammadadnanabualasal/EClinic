@@ -45,7 +45,10 @@ public class AdminController {
         if (session.getAttribute("user") != null && ((UserEntity) session.getAttribute("user")).getPermission().equals("admin"))
         {
             if (!confirmPassword.equals(password)) {
-                return new ModelAndView("redirect:/addNewUser");
+                return new ModelAndView("redirect:/addNewUser?error=the password and confirm password fields are not matched!");
+            }
+            if (UserEntity.getUserByEmail(email) != null) {
+                return new ModelAndView("redirect:/addNewUser?error=the email is already used!");
             }
             EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
             EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -70,7 +73,7 @@ public class AdminController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return new ModelAndView("redirect:/addNewUser");
+            return new ModelAndView("redirect:/addNewUser?error=something went wrong!");
         } else
         {
             return new ModelAndView("redirect:/home");
@@ -78,14 +81,16 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/addNewUser", method = RequestMethod.GET)
-    public ModelAndView addNewUser(HttpSession session)
+    public ModelAndView addNewUser(HttpSession session, @RequestParam(value = "error", defaultValue = "") String error)
     {
         if (session.getAttribute("user") != null && ((UserEntity) session.getAttribute("user")).getPermission().equals("admin"))
         {
-            return new ModelAndView("addNewUser");
+            ModelAndView modelAndView = new ModelAndView("addNewUser");
+            modelAndView.addObject("error", error);
+            return modelAndView;
         }else
         {
-            return new ModelAndView("redirect:/error");
+            return new ModelAndView("redirect:/login");
         }
     }
 
@@ -110,10 +115,11 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/editUser/{userId}", method = RequestMethod.GET)
-    public ModelAndView editUser(HttpSession session, @PathVariable("userId") String userId) {
+    public ModelAndView editUser(HttpSession session, @PathVariable("userId") String userId, @RequestParam(value = "error", defaultValue = "") String error) {
 
         if (session.getAttribute("user") != null && ((UserEntity) session.getAttribute("user")).getPermission().equals("admin")) {
             ModelAndView modelAndView = new ModelAndView("editUser");
+            modelAndView.addObject("error", error);
             modelAndView.addObject("user", UserEntity.getUserById(userId));
             return modelAndView;
         }
@@ -134,7 +140,10 @@ public class AdminController {
         if (session.getAttribute("user") != null && ((UserEntity) session.getAttribute("user")).getPermission().equals("admin")) {
             ModelAndView modelAndView = new ModelAndView("redirect:/showUsers");
             if (!confirmPassword.equals(password)) {
-                return new ModelAndView("redirect://updateUser/"+id);
+                return new ModelAndView("redirect:/editUser/"+id+"?error=the password and confirm password fields are not matched!");
+            }
+            if (UserEntity.getUserByEmail(email) != null && !id.equals(UserEntity.getUserByEmail(email).getId()+"")) {
+                return new ModelAndView("redirect:/editUser/"+id+"?error=the email is already used!");
             }
             UserEntity userEntity = UserEntity.getUserById(id);
             userEntity.setName(name);
@@ -142,7 +151,10 @@ public class AdminController {
             userEntity.setEmail(email);
             userEntity.setPhone(phone);
             userEntity.setPermission(permission);
-            UserEntity.addNewUser(userEntity, true);
+            boolean status = UserEntity.addNewUser(userEntity, true);
+            if (!status){
+                return new ModelAndView("redirect:/editUser/"+id+"?error=something went wrong!");
+            }
             return modelAndView;
         }
         return new ModelAndView("redirect:/home");

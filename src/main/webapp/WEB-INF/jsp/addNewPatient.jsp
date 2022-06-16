@@ -10,18 +10,19 @@
     <div class="col-md-4"></div>
     <div class="col-md-4">
         <form role="form" class="login-form" action="/addNewPatient" method="post">
+            <p class="warning">${error}</p>
             <div class="form-group">
                 <label for="name">
                     Name
                 </label>
-                <input type="text" class="form-control" id="name" name="name"/>
+                <input type="text" class="form-control" id="name" name="name" maxlength="50" required/>
             </div>
             <div class="form-group">
                 <label for="gender">
                     Gender
                 </label>
                 <select name="gender" id="gender" class="form-select form-select-lg mb-3"
-                        aria-label="Gender">
+                        aria-label="Gender" required>
                     <option value="male" selected>Male</option>
                     <option value="female" selected>Female</option>
                 </select>
@@ -30,19 +31,19 @@
                 <label for="weight">
                     Weight
                 </label>
-                <input type="number" class="form-control" id="weight" name="weight"/>
+                <input type="number" class="form-control" id="weight" name="weight" required/>
             </div>
             <div class="form-group">
                 <label for="height">
                     Height
                 </label>
-                <input type="number" class="form-control" id="height" name="height"/>
+                <input type="number" class="form-control" id="height" name="height" required/>
             </div>
             <div class="form-group">
                 <label for="diagnosis">
                     Diagnosis
                 </label>
-                <input type="text" class="form-control" id="diagnosis" name="diagnosis"/>
+                <input type="text" class="form-control" id="diagnosis" name="diagnosis" maxlength="200" required/>
             </div>
             <div class="form-group">
                 <label for="company">Insurance Company</label>
@@ -67,7 +68,7 @@
                 <label for="phone">
                     phone
                 </label>
-                <input type="text" class="form-control" id="phone" name="phone"/>
+                <input type="text" class="form-control" id="phone" name="phone" maxlength="14" required/>
             </div>
             <button type="submit" class="btn btn-primary">
                 Add Patient

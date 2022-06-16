@@ -12,6 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <form role="form" action="/doLogin">
+                        <p class="warning">${error}</p>
                         <div class="form-group">
 
                             <label for="exampleInputEmail1">

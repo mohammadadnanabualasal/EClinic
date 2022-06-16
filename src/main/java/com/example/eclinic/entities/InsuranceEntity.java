@@ -196,4 +196,20 @@ public class InsuranceEntity {
 
     }
 
+    public static InsuranceEntity getInsuranceEntityByPhone(String phone) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        InsuranceEntity insurance;
+        try {
+            Query query = entityManager.createNativeQuery("SELECT * FROM  insurance WHERE phone='" + phone + "';", InsuranceEntity.class);
+            insurance = (InsuranceEntity) query.getResultList().get(0);
+        } catch (Exception exception) {
+            return null;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return insurance;
+    }
+
 }

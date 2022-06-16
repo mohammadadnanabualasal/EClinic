@@ -10,50 +10,50 @@
     <div class="col-md-4"></div>
     <div class="col-md-4">
         <form role="form" class="login-form" action="/addNewUser" method="post">
+            <p class="warning">${error}</p>
             <div class="form-group">
                 <label for="name">
                     Name
                 </label>
-                <input type="text" class="form-control" id="name"  name="name"/>
+                <input type="text" class="form-control" id="name" name="name" maxlength="50" required/>
             </div>
             <div class="form-group">
                 <label for="email">
                     Email address
                 </label>
-                <input type="email" class="form-control" id="email"  name="email"/>
+                <input type="email" class="form-control" id="email" name="email" maxlength="100" required/>
             </div>
             <div class="form-group">
                 <label for="permission">User Role</label>
                 <select name="permission" id="permission" class="form-select form-select-lg mb-3"
-                        aria-label="Role">
-                        <option value="admin">Admin</option>
-                        <option value="doctor">Doctor</option>
-                        <option value="secretary" selected>Secretary</option>
+                        aria-label="Role" required>
+                    <option value="admin">Admin</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="secretary" selected>Secretary</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="phone">
                     phone
                 </label>
-                <input type="text" class="form-control" id="phone" name="phone"/>
+                <input type="number" class="form-control" id="phone" name="phone" required maxlength="15"/>
             </div>
             <div class="form-group">
                 <label for="password">
                     Password
                 </label>
-                <input type="password" class="form-control" id="password" name="password"/>
+                <input type="password" class="form-control" id="password" name="password" maxlength="50" required/>
             </div>
             <div class="form-group">
                 <label for="confirmPassword">
                     Confirm your Password
                 </label>
-                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"/>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" maxlength="50" required/>
             </div>
             <button type="submit" class="btn btn-primary">
                 Create New User
             </button>
         </form>
-
     </div>
     <div class="col-md-4"></div>
 </div>

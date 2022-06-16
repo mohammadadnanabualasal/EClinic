@@ -10,6 +10,7 @@
     <div class="col-md-4"></div>
     <div class="col-md-4">
         <form role="form" class="login-form" action="/updateAppointment/${appointment.id}" method="post">
+            <p class="warning">${error}</p>
             <div class="form-group">
                 <label for="patient">
                     Patient

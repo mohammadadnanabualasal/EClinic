@@ -32,11 +32,12 @@ public class SecretaryController {
     }
 
     @RequestMapping(value = "/addNewPatient", method = RequestMethod.GET)
-    public ModelAndView addNewPatientGet(HttpSession session) {
+    public ModelAndView addNewPatientGet(HttpSession session, @RequestParam(value = "error", defaultValue = "") String error) {
         if (havePermission(session)) {
             ModelAndView modelAndView = new ModelAndView("addNewPatient");
             modelAndView.addObject("companies", InsuranceEntity.getAllInsuranceEntities());
             modelAndView.addObject("doctors", UserEntity.getAllDoctors());
+            modelAndView.addObject("error", error);
             return modelAndView;
 
         } else {
@@ -55,6 +56,9 @@ public class SecretaryController {
             , @RequestParam(name = "phone") String phone
             , @RequestParam(name = "doctorId", defaultValue = "0") int doctorId) {
         if (havePermission(session)) {
+            if (PatientEntity.getPatientByPhone(phone) != null){
+                return new ModelAndView("redirect:addNewPatient?error=the phone number is used!");
+            }
             PatientEntity patientEntity = new PatientEntity();
             patientEntity.setName(name);
             patientEntity.setGender(gender);
@@ -68,14 +72,14 @@ public class SecretaryController {
             try {
                 success = PatientEntity.addNewPatient(patientEntity, false);
                 if (success) {
-                    return new ModelAndView("redirect:/addNewAppointment");
+                    return new ModelAndView("redirect:/showPatients");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return new ModelAndView("redirect:/addNewPatient");
+            return new ModelAndView("redirect:/addNewPatient?error=something went wrong!");
         } else {
-            return new ModelAndView("redirect:/home");
+            return new ModelAndView("redirect:/login");
         }
     }
 
@@ -89,12 +93,13 @@ public class SecretaryController {
     }
 
     @RequestMapping(value = "/editPatient/{patientId}", method = RequestMethod.GET)
-    public ModelAndView editPatient(HttpSession session, @PathVariable("patientId") String patientId) {
+    public ModelAndView editPatient(HttpSession session, @PathVariable("patientId") String patientId, @RequestParam(value = "error", defaultValue = "") String error) {
 
         if (havePermission(session)) {
             ModelAndView modelAndView = new ModelAndView("editPatient");
             modelAndView.addObject("insurances", InsuranceEntity.getAllInsuranceEntities());
             modelAndView.addObject("doctors", UserEntity.getAllDoctors());
+            modelAndView.addObject("error", error);
             modelAndView.addObject("patient", PatientEntity.getPatientById(patientId));
             return modelAndView;
         }
@@ -114,6 +119,9 @@ public class SecretaryController {
             , @RequestParam(name = "doctorId", defaultValue = "0") int doctorId
     ) {
 
+        if (PatientEntity.getPatientByPhone(phone) != null){
+            return new ModelAndView("redirect:/editPatient/"+patientId+"?error=the phone number is used!");
+        }
         if (havePermission(session)) {
             ModelAndView modelAndView = new ModelAndView("redirect:/showPatients");
             PatientEntity patientEntity = PatientEntity.getPatientById(patientId + "");
@@ -146,9 +154,11 @@ public class SecretaryController {
     }
 
     @RequestMapping(value = "/addNewInsuranceCompany", method = RequestMethod.GET)
-    public ModelAndView addNewInsuranceCompany(HttpSession session){
+    public ModelAndView addNewInsuranceCompany(HttpSession session, @RequestParam(value = "error", defaultValue = "") String error){
         if (havePermission(session)) {
-            return new ModelAndView("addNewInsuranceCompany");
+            ModelAndView modelAndView = new ModelAndView("addNewInsuranceCompany");
+            modelAndView.addObject("error", error);
+            return modelAndView;
         }else {
             return new ModelAndView("redirect:/login");
         }
@@ -165,6 +175,9 @@ public class SecretaryController {
             , @RequestParam(name = "keyPersonName") String keyPersonName
             , @RequestParam(name = "phone") String phone) {
         if (havePermission(session)) {
+            if (InsuranceEntity.getInsuranceEntityByPhone(phone) != null){
+                return new ModelAndView("redirect:/addNewInsuranceCompany?error=the phone number is used!");
+            }
             InsuranceEntity insurance = new InsuranceEntity();
             insurance.setName(name);
             insurance.setAddress(address);
@@ -199,11 +212,12 @@ public class SecretaryController {
     }
 
     @RequestMapping(value = "/editInsurance/{insuranceId}", method = RequestMethod.GET)
-    public ModelAndView editInsurance(HttpSession session, @PathVariable("insuranceId") int insuranceId)
+    public ModelAndView editInsurance(HttpSession session, @PathVariable("insuranceId") int insuranceId, @RequestParam(value = "error", defaultValue = "") String error)
     {
         if (havePermission(session)) {
             ModelAndView modelAndView = new ModelAndView("editInsurance");
             modelAndView.addObject("insurance", InsuranceEntity.getInsuranceEntityById(insuranceId));
+            modelAndView.addObject("error", error);
             return modelAndView;
         }
         return new ModelAndView("redirect:/home");
@@ -223,6 +237,9 @@ public class SecretaryController {
     {
 
         if (havePermission(session)) {
+            if (InsuranceEntity.getInsuranceEntityByPhone(phone) != null){
+                return new ModelAndView("redirect:/editInsurance/"+insuranceId+"?error=the phone number is used!");
+            }
             ModelAndView modelAndView = new ModelAndView("redirect:/showInsuranceCompanies");
             InsuranceEntity insurance =InsuranceEntity.getInsuranceEntityById(insuranceId);
             insurance.setName(name);
@@ -308,12 +325,13 @@ public class SecretaryController {
     }
 
     @RequestMapping(value = "/editAppointment/{id}", method = RequestMethod.GET)
-    public ModelAndView editAppointment(HttpSession session, @PathVariable("id") int appointmentId)
+    public ModelAndView editAppointment(HttpSession session, @PathVariable("id") int appointmentId, @RequestParam(value = "error", defaultValue = "") String error)
     {
         if (havePermission(session)) {
             ModelAndView modelAndView = new ModelAndView("editAppointment");
             modelAndView.addObject("appointment", AppointmentEntity.getAppointmentById(appointmentId));
             modelAndView.addObject("doctors", UserEntity.getAllDoctors());
+            modelAndView.addObject("error", error);
             modelAndView.addObject("patients", PatientEntity.getAllPatients());
             return modelAndView;
         }
@@ -339,11 +357,15 @@ public class SecretaryController {
                 appointmentEntity.setDate(Date.valueOf(date));
             } catch (ParseException e) {
                 e.printStackTrace();
-                throw new RuntimeException(e);
+                return new ModelAndView("redirect:/editAppointment/"+appointmentId+"?error=something went wrong!");
             }
             appointmentEntity.setDoctorId(doctorId);
             appointmentEntity.setPatientId(patientId);
-            AppointmentEntity.addNewAppointment(appointmentEntity, true);
+            if(AppointmentEntity.isDoctorAvailableAt(doctorId, new Time(ms), Date.valueOf(date))) {
+                AppointmentEntity.addNewAppointment(appointmentEntity, true);
+            }else {
+                return new ModelAndView("redirect:/editAppointment/"+appointmentId+"?error=Doctor "+UserEntity.getUserById(doctorId+"").getName()+" is not available at this time.");
+            }
             return new ModelAndView("redirect:/showAppointments");
         }
         return new ModelAndView("redirect:/login");

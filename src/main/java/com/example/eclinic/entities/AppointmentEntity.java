@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -206,8 +207,11 @@ public class AppointmentEntity {
         try {
             time = new Time(simpleDateFormat.parse(time.toString()).getTime());
             List<AppointmentEntity> appointments;
+            LocalTime localTimeCritical = LocalTime.of(0,27);
             Query query = entityManager.createNativeQuery("SELECT * FROM  appointment WHERE doctorId='"
-                    + doctorId + "' and date ='"+date+"' and time > '"+time.toLocalTime().minusMinutes(30).toString()+"' and time < '"+
+                    + doctorId + "' and date ='"+date+"' and time > '"
+                    +(time.toLocalTime().isBefore(localTimeCritical)?"00:00":time.toLocalTime().minusMinutes(30).toString())
+                    +"' and time < '"+
                     time.toLocalTime().plusMinutes(30).toString()+"';", AppointmentEntity.class);
             appointments = query.getResultList();
             if (appointments.size()>0)

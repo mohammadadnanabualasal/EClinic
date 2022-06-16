@@ -251,4 +251,20 @@ public class PatientEntity {
         }
         return patientEntities;
     }
+
+    public static PatientEntity getPatientByPhone(String phone){
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("eclinic");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        PatientEntity patientEntity;
+        try {
+            Query query = entityManager.createNativeQuery("SELECT * FROM  patient WHERE phone='" + phone + "';", PatientEntity.class);
+            patientEntity = (PatientEntity) query.getResultList().get(0);
+        } catch (Exception exception) {
+            return null;
+        }finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return patientEntity;
+    }
 }

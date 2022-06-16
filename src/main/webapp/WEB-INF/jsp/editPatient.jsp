@@ -10,11 +10,12 @@
     <div class="col-md-4"></div>
     <div class="col-md-4">
         <form role="form" class="login-form" action="/updatePatient/${patient.id}" method="post">
+            <p class="warning">${error}</p>
             <div class="form-group">
                 <label for="name">
                     Name
                 </label>
-                <input type="text" class="form-control" id="name" name="name" value="${patient.name}"/>
+                <input type="text" class="form-control" id="name" name="name" value="${patient.name}" maxlength="50" required/>
             </div>
             <c:set var="isMale">
                 <c:if test="${patient.gender eq 'male'}">
@@ -40,19 +41,19 @@
                 <label for="weight">
                     Weight
                 </label>
-                <input type="number" class="form-control" id="weight" name="weight" value="${patient.weight}"/>
+                <input type="number" class="form-control" id="weight" name="weight" value="${patient.weight}" required/>
             </div>
             <div class="form-group">
                 <label for="height">
                     Height
                 </label>
-                <input type="number" class="form-control" id="height" name="height" value="${patient.height}"/>
+                <input type="number" class="form-control" id="height" name="height" value="${patient.height}" required/>
             </div>
             <div class="form-group">
                 <label for="diagnosis">
                     Diagnosis
                 </label>
-                <input type="text" class="form-control" id="diagnosis" name="diagnosis" value="${patient.diagnosis}"/>
+                <input type="text" class="form-control" id="diagnosis" name="diagnosis" value="${patient.diagnosis}" maxlength="200" required/>
             </div>
             <div class="form-group">
                 <label for="company">Insurance Company</label>
@@ -90,7 +91,7 @@
                 <label for="phone">
                     phone
                 </label>
-                <input type="text" class="form-control" id="phone" name="phone" value="${patient.phone}"/>
+                <input type="text" class="form-control" id="phone" name="phone" value="${patient.phone}" maxlength="14" required/>
             </div>
             <button type="submit" class="btn btn-primary">
                 Update Patient

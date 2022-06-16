@@ -10,17 +10,18 @@
     <div class="col-md-4"></div>
     <div class="col-md-4">
         <form role="form" class="login-form" action="/updateUser/${user.id}" method="post">
+            <p class="warning">${error}</p>
             <div class="form-group">
                 <label for="name">
                     Name
                 </label>
-                <input type="text" class="form-control" id="name"  name="name" value="${user.name}"/>
+                <input type="text" class="form-control" id="name"  name="name" value="${user.name}" maxlength="50" required/>
             </div>
             <div class="form-group">
                 <label for="email">
                     Email Address
                 </label>
-                <input type="email" class="form-control" id="email"  name="email" value="${user.email}"/>
+                <input type="email" class="form-control" id="email"  name="email" value="${user.email}" maxlength="100" required/>
             </div>
             <c:set var="isAdmin">
                 <c:if test="${user.permission eq 'admin'}">
@@ -50,25 +51,24 @@
                 <label for="phone">
                     Phone Number
                 </label>
-                <input type="text" class="form-control" id="phone" name="phone" value="${user.phone}"/>
+                <input type="number" class="form-control" id="phone" name="phone" value="${user.phone}" maxlength="15" required/>
             </div>
             <div class="form-group">
                 <label for="password">
                     Password
                 </label>
-                <input type="password" class="form-control" id="password" name="password" value="${user.password}"/>
+                <input type="password" class="form-control" id="password" name="password" value="${user.password}" maxlength="50" required/>
             </div>
             <div class="form-group">
                 <label for="confirmPassword">
                     Confirm Password
                 </label>
-                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" value="${user.password}"/>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" value="${user.password}" maxlength="50" required/>
             </div>
             <button type="submit" class="btn btn-primary">
                 Update User
             </button>
         </form>
-
     </div>
     <div class="col-md-4"></div>
 </div>
