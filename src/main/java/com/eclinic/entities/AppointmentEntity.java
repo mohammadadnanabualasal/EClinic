@@ -1,4 +1,4 @@
-package com.example.eclinic.entities;
+package com.eclinic.entities;
 
 import javax.persistence.*;
 import java.sql.Date;

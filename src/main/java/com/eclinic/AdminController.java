@@ -1,6 +1,6 @@
-package com.example.eclinic;
+package com.eclinic;
 
-import com.example.eclinic.entities.UserEntity;
+import com.eclinic.entities.UserEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package com.example.eclinic;
+package com.eclinic;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;

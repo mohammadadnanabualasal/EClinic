@@ -1,16 +1,13 @@
-package com.example.eclinic;
+package com.eclinic;
 
-import com.example.eclinic.entities.AppointmentEntity;
-import com.example.eclinic.entities.UserEntity;
+import com.eclinic.entities.AppointmentEntity;
+import com.eclinic.entities.UserEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.sql.Date;
 import java.util.List;
 
 @Controller

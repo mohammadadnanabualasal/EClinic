@@ -1,9 +1,9 @@
-package com.example.eclinic;
+package com.eclinic;
 
-import com.example.eclinic.entities.AppointmentEntity;
-import com.example.eclinic.entities.InsuranceEntity;
-import com.example.eclinic.entities.PatientEntity;
-import com.example.eclinic.entities.UserEntity;
+import com.eclinic.entities.AppointmentEntity;
+import com.eclinic.entities.InsuranceEntity;
+import com.eclinic.entities.PatientEntity;
+import com.eclinic.entities.UserEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
